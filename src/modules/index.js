@@ -1,7 +1,8 @@
-import AuthService from "../service/auth"
+import AuthService from "../service/auth";
 
 const state = {
     isLoading: false,
+    user:null,
 };
 
 const mutations = {
@@ -13,24 +14,27 @@ const mutations = {
     },
     registerFailed(state) {
         state.isLoading = false;
-    }
+    },
 };
 
 const actions = {
-    async register(context, user) {
-        context.commit('registerStart');
-        try {
-            const res = await AuthService.register(user);
-            await context.commit('registerSuccess');
-            console.log(res);
-        } catch (err) {
-            await context.commit('registerFailed');
-        }
-    }
+    register({commit}, user) {
+        commit("registerStart")
+        return new Promise((resolve,reject)=>{
+            AuthService.register(user)
+                .then((res) => {
+                    commit('registerSuccess');
+                    resolve(res);
+                }).catch(error=>{
+                    commit("registerFailed");
+                    reject(error?.response?.data?.errors)
+                })
+        })
+    },
 };
 
 export default {
-    actions,
-    mutations,
     state,
+    mutations,
+    actions,
 };
