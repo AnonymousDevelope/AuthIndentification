@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getToken } from "../JWT/tokenPersent";
-axios.defaults.baseURL = "https://api.realworld.io/api";
+axios.defaults.baseURL = "http://localhost:3000/api";
 axios.interceptors.request.use(config=>{
     const token = getToken("token");
     const authorazition = token ? `Token ${token}` : "";
